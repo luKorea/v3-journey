@@ -10,7 +10,10 @@ const router = createRouter({
         {
             path: '/home',
             name: 'home',
-            component: () => import(/* webpackChunkName: 'home' */'@/views/home/home.vue')
+            component: () => import(/* webpackChunkName: 'home' */'@/views/home/home.vue'),
+            meta: {
+                keepAlive: true
+            }
         },
         {
             path: '/favor',

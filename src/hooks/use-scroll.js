@@ -1,5 +1,12 @@
-import { onDeactivated, onMounted, onUnmounted, ref } from 'vue';
-import { throttle } from 'underscore'
+import {
+  onDeactivated,
+  onMounted,
+  onUnmounted,
+  ref
+} from 'vue';
+import {
+  throttle
+} from 'underscore'
 
 export default function useScroll(elRef) {
   let el = window
@@ -21,20 +28,30 @@ export default function useScroll(elRef) {
       scrollTop.value = el.scrollTop
       scrollHeight.value = el.scrollHeight
     }
-    if (clientHeight.value + scrollTop.value >= scrollHeight.value) {
+    console.log(scrollHeight.value, clientHeight.value + scrollTop.value);
+    // 参数偏差0.5
+    if (Math.round(clientHeight.value + scrollTop.value) >= scrollHeight.value) {
       console.log("滚动到底部了")
       isReachBottom.value = true
     }
   }, 100)
-  
+
   onMounted(() => {
     if (elRef) el = elRef.value
     el.addEventListener("scroll", scrollListenerHandler)
   })
-  
+
   onUnmounted(() => {
     el.removeEventListener("scroll", scrollListenerHandler)
   })
+  onDeactivated(() => {
+    el.removeEventListener("scroll", scrollListenerHandler)
+  })
 
-  return { isReachBottom, clientHeight, scrollTop, scrollHeight }
+  return {
+    isReachBottom,
+    clientHeight,
+    scrollTop,
+    scrollHeight
+  }
 }

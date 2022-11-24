@@ -1,5 +1,5 @@
 <template>
-  <div class="home-container">
+  <div class="home-container" ref="homeRef">
     <nav-bar>
       <template #center>
         <span>旅途优选</span>
@@ -13,17 +13,22 @@
     <location-cpn></location-cpn>
     <!-- 分类 -->
     <categories-cpn></categories-cpn>
-    <!-- 列表 -->
-    <list-cpn></list-cpn>
-    <!-- 浮动搜索 -->
-    <div class="search-bar bottom-gray-line" v-if="isShowSearchBar">
+     <!-- 浮动搜索 -->
+     <div class="search-bar bottom-gray-line" v-if="isShowSearchBar">
       <search-bar></search-bar>
     </div>
+    <!-- 列表 -->
+    <list-cpn></list-cpn>
   </div>
 </template>
 
+<script>
+export default {
+  name: 'home'
+}
+</script>
 <script setup>
-import { watch, computed } from "vue";
+import { watch, computed, ref, onActivated } from 'vue';
 
 import NavBar from "@/components/nav-bar/nav-bar.vue";
 import SearchBar from '@/components/search-bar/search-bar.vue'
@@ -36,7 +41,9 @@ import useScroll from "@/hooks/use-scroll";
 
 useGetData();
 
-const { isReachBottom, scrollTop } = useScroll();
+const homeRef = ref()
+
+const { isReachBottom, scrollTop } = useScroll(homeRef);
 watch(isReachBottom, (newValue) => {
   if (newValue) {
     homeStore.fetchHouseListData().then(() => {
@@ -45,12 +52,20 @@ watch(isReachBottom, (newValue) => {
   }
 });
 
+onActivated(() => {
+  homeRef.value?.scrollTo({
+    top: scrollTop.value
+  })
+})
+
 const isShowSearchBar = computed(() => scrollTop.value >= 360);
 </script>
 
 <style lang="less" scoped>
 .home-container {
+  height: 100vh;
   padding-bottom: 60px;
+  overflow-y: auto;
   .banner {
     img {
       width: 100%;
