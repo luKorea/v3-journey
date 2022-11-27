@@ -1,6 +1,6 @@
 <template>
   <div>
-    message
+    响应式函数原理
   </div>
 </template>
 
